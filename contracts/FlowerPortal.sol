@@ -17,7 +17,7 @@ contract FlowerPortal {
   }
 
   function getTotalFlowers() public view returns (uint256) {
-    console.log("we have %d total flowers!", totalFlowers);
+    console.log("we have %d flowers!", totalFlowers);
     return totalFlowers;
   }
 }

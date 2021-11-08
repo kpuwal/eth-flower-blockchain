@@ -19,7 +19,12 @@ const main = async () => {
   let flowerCount;
   flowerCount = await flowerContract.getTotalFlowers();
 
-  const flowerTxn = await flowerContract.flower();
+  let flowerTxn = await flowerContract.flower();
+  await flowerTxn.wait();
+
+  flowerCount = await flowerContract.getTotalFlowers();
+
+  flowerTxn = await flowerContract.connect(randomPerson).flower();
   await flowerTxn.wait();
 
   flowerCount = await flowerContract.getTotalFlowers();
