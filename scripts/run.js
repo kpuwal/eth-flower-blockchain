@@ -1,4 +1,7 @@
 const main = async () => {
+  // here I grabbed the wallet address of contract owner and I also grabbed a random wallet address and called it randomPerson. 
+  const [owner, randomPerson] = await hre.ethers.getSigners();
+
   // This will actually compile our contract and generate the necessary files we need to work with our contract under the artifacts directory. Go check it out after you run this :).
   const flowerContractFactory = await hre.ethers.getContractFactory('FlowerPortal');
 
@@ -10,6 +13,16 @@ const main = async () => {
 
   // Finally, once it's deployed waveContract.address  will basically give us the address of the deployed contract. This address is how we can actually find our contract on the blockchain. There are millions of contracts on the actual blockchain. So, this address gives us easy access to the contract we're interested in working with! This will be more important a bit later once we deploy to a real Ethereum network.
   console.log("Contract deployed to:", flowerContract.address);
+  console.log("Contract deployed by:", owner.address);
+  console.log("random person", randomPerson.address);
+
+  let flowerCount;
+  flowerCount = await flowerContract.getTotalFlowers();
+
+  const flowerTxn = await flowerContract.flower();
+  await flowerTxn.wait();
+
+  flowerCount = await flowerContract.getTotalFlowers();
 };
 
 const runMain = async () => {
