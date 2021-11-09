@@ -7,4 +7,7 @@ typechain
 #Hardhat files
 cache
 artifacts
+
+# additional files
 section1_files
+.DS_Store
