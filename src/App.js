@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-// import { ethers } from "ethers";
+import { ethers } from "ethers";
+import abi from './utils/FlowerPortal.json';
 import './App.css';
 
 export default function App() {
@@ -7,9 +8,37 @@ export default function App() {
   * Just a state variable we use to store our user's public wallet.
   */
   const [currentAccount, setCurrentAccount] = useState("");
-  const plant = () => {
-    
-  }
+  const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
+  const contractABI = abi.abi;
+
+  const plant = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const plantPortalContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        let count = await plantPortalContract.getTotalFlowers();
+        console.log("Retrieved total wave count...", count.toNumber());
+
+        const plantTxn = await plantPortalContract.flower();
+        console.log("Mining...", plantTxn.hash);
+
+        await plantTxn.wait();
+        console.log("Mined -- ", plantTxn.hash);
+
+        count = await plantPortalContract.getTotalFlowers();
+        console.log("Retrieved total wave count...", count.toNumber());
+
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error)
+    }
+}
 
   const checkIfWalletIsConnected = async () => {
     try {
