@@ -1,3 +1,5 @@
+const hre = require("hardhat");
+
 const main = async () => {
   // here I grabbed the wallet address of contract owner and I also grabbed a random wallet address and called it randomPerson. 
   const [owner, randomPerson] = await hre.ethers.getSigners();
@@ -19,15 +21,19 @@ const main = async () => {
   let flowerCount;
   flowerCount = await flowerContract.getTotalFlowers();
 
-  let flowerTxn = await flowerContract.flower();
+  let flowerTxn = await flowerContract.flower('A message!');
   await flowerTxn.wait();
 
   flowerCount = await flowerContract.getTotalFlowers();
 
-  flowerTxn = await flowerContract.connect(randomPerson).flower();
+  flowerTxn = await flowerContract.connect(randomPerson).flower('Another message!');
   await flowerTxn.wait();
 
   flowerCount = await flowerContract.getTotalFlowers();
+  console.log(flowerCount.toNumber());
+
+  let allFlowers = await flowerContract.getAllFlowers();
+  console.log(allFlowers);
 };
 
 const runMain = async () => {
