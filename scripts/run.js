@@ -33,28 +33,20 @@ const main = async () => {
     hre.ethers.utils.formatEther(contractBalance)
   );
 
-  let flowerCount;
-  flowerCount = await flowerContract.getTotalFlowers();
-
   let flowerTxn = await flowerContract.flower('A message!');
   await flowerTxn.wait();
 
-  /*
-   * Get Contract balance to see what happened!
-   */
+  flowerTxn = await flowerContract.connect(randomPerson).flower('Another message!');
+  await flowerTxn.wait();
+
   contractBalance = await hre.ethers.provider.getBalance(flowerContract.address);
   console.log(
     'Contract balance:',
     hre.ethers.utils.formatEther(contractBalance)
   );
 
-  flowerCount = await flowerContract.getTotalFlowers();
-
-  flowerTxn = await flowerContract.connect(randomPerson).flower('Another message!');
-  await flowerTxn.wait();
-
-  flowerCount = await flowerContract.getTotalFlowers();
-  console.log(flowerCount.toNumber());
+  let flowerCount = await flowerContract.getTotalFlowers();
+  console.log("flower count ",flowerCount.toNumber());
 
   let allFlowers = await flowerContract.getAllFlowers();
   console.log(allFlowers);
