@@ -23,6 +23,12 @@ contract FlowerPortal {
 
   Flower[] flowers;
 
+  /*
+  * This is an address => uint mapping, meaning I can associate an address with a number!
+  * In this case, I'll be storing the address with the last time the user waved at us.
+  */
+  mapping(address => uint256) public lastPlantedAt;
+
   constructor() payable {
     console.log("We have been constructed!");
     /*
@@ -33,6 +39,19 @@ contract FlowerPortal {
   }
 
   function flower(string memory _message) public {
+    /*
+    * We need to make sure the current timestamp is at least 15-minutes bigger than the last timestamp we stored
+    */
+    require(
+        lastPlantedAt[msg.sender] + 15 minutes < block.timestamp,
+        "Wait 15m"
+    );
+
+    /*
+      * Update the current timestamp we have for the user
+      */
+    lastPlantedAt[msg.sender] = block.timestamp;
+
     totalFlowers += 1;
     console.log("%s has planted a flower", msg.sender);
 
@@ -43,6 +62,7 @@ contract FlowerPortal {
 
     //  Generate a new seed for the next user that sends a wave
     seed = (block.difficulty + block.timestamp + seed) % 100;
+    console.log("next seed ", seed);
 
     if (seed <= 50) {
       console.log("%s won!", msg.sender);
