@@ -20,8 +20,8 @@ contract FlowerPortal {
 
   Flower[] flowers;
 
-  constructor() {
-    console.log("Yo yo, the script is working!!");
+  constructor() payable {
+    console.log("We have been constructed!");
   }
 
   function flower(string memory _message) public {

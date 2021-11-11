@@ -8,7 +8,11 @@ const main = async () => {
   const flowerContractFactory = await hre.ethers.getContractFactory('FlowerPortal');
 
   //  Hardhat will create a local Ethereum network for us, but just for this contract. Then, after the script completes it'll destroy that local network. So, every time you run the contract, it'll be a fresh blockchain. What's the point? It's kinda like refreshing your local server every time so you always start from a clean slate which makes it easy to debug errors.
-  const flowerContract = await flowerContractFactory.deploy();
+  const flowerContract = await flowerContractFactory.deploy(
+    {
+      value: hre.ethers.utils.parseEther('0.1'),
+    }
+  );
 
   // We'll wait until our contract is officially deployed to our local blockchain! Our constructor runs when we actually deploy
   await flowerContract.deployed();
@@ -18,11 +22,31 @@ const main = async () => {
   console.log("Contract deployed by:", owner.address);
   console.log("random person", randomPerson.address);
 
+  /*
+   * Get Contract balance
+   */
+  let contractBalance = await hre.ethers.provider.getBalance(
+    flowerContract.address
+  );
+  console.log(
+    'Contract balance:',
+    hre.ethers.utils.formatEther(contractBalance)
+  );
+
   let flowerCount;
   flowerCount = await flowerContract.getTotalFlowers();
 
   let flowerTxn = await flowerContract.flower('A message!');
   await flowerTxn.wait();
+
+  /*
+   * Get Contract balance to see what happened!
+   */
+  contractBalance = await hre.ethers.provider.getBalance(flowerContract.address);
+  console.log(
+    'Contract balance:',
+    hre.ethers.utils.formatEther(contractBalance)
+  );
 
   flowerCount = await flowerContract.getTotalFlowers();
 
