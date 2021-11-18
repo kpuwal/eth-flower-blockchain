@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import abi from './utils/FlowerPortal.json';
+import List from './components/List';
 import './App.css';
 
 export default function App() {
@@ -8,8 +9,6 @@ export default function App() {
   * Just a state variable we use to store our user's public wallet.
   */
   const [currentAccount, setCurrentAccount] = useState("");
-  const [allFlowers, setAllFlowers] = useState([]);
-
   const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
   const contractABI = abi.abi;
 
@@ -25,7 +24,7 @@ export default function App() {
         let count = await plantPortalContract.getTotalFlowers();
         console.log("Retrieved total wave count...", count.toNumber());
 
-        const plantTxn = await plantPortalContract.flower('this is a message');
+        const plantTxn = await plantPortalContract.flower('this is a message', { gasLimit: 300000});
         console.log("Mining...", plantTxn.hash);
 
         await plantTxn.wait();
@@ -91,48 +90,7 @@ export default function App() {
   /*
   * This runs our function when the page loads.
   */
-  useEffect(() => {
-    checkIfWalletIsConnected();
-
-    const getAllFlowers = async () => {
-      try {
-        const { ethereum } = window;
-        if (ethereum) {
-          const provider = new ethers.providers.Web3Provider(ethereum);
-          const signer = provider.getSigner();
-          const plantPortalContract = new ethers.Contract(contractAddress, contractABI, signer);
-  
-          /*
-           * Call the getAllWaves method from your Smart Contract
-           */
-          const flowers = await plantPortalContract.getAllFlowers();
-          console.log(flowers);
-          /*
-           * We only need address, timestamp, and message in our UI so let's
-           * pick those out
-           */
-          let flowersCleaned = [];
-          flowers.forEach(flower => {
-            flowersCleaned.push({
-              address: flower.planter,
-              timestamp: new Date(flower.timestamp * 1000),
-              message: flower.message
-            });
-          });
-  
-          /*
-           * Store our data in React State
-           */
-          setAllFlowers(flowersCleaned);
-        } else {
-          console.log("Ethereum object doesn't exist!");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getAllFlowers();
-  }, [contractABI, contractAddress]);
+  useEffect(() => checkIfWalletIsConnected(), []);
   
   return (
     <div className="mainContainer">
@@ -145,10 +103,11 @@ export default function App() {
         <div className="bio">
         Connect your Ethereum wallet and plant a flower.
         </div>
-
-        <button className="waveButton" onClick={plant}>
+        {currentAccount && (
+          <button className="waveButton" onClick={plant}>
           Plant a flower
         </button>
+        )}
         {/*
         * If there is no currentAccount render this button
         */}
@@ -158,14 +117,7 @@ export default function App() {
           </button>
         )}
 
-        {allFlowers.map((flower, index) => {
-          return (
-            <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
-              <div>Address: {flower.address}</div>
-              <div>Time: {flower.timestamp.toString()}</div>
-              <div>Message: {flower.message}</div>
-            </div>)
-        })}
+        <List />
       </div>
     </div>
   );

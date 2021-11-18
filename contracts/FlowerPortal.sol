@@ -43,8 +43,8 @@ contract FlowerPortal {
     * We need to make sure the current timestamp is at least 15-minutes bigger than the last timestamp we stored
     */
     require(
-        lastPlantedAt[msg.sender] + 15 minutes < block.timestamp,
-        "Wait 15m"
+        lastPlantedAt[msg.sender] + 30 minutes < block.timestamp,
+        "Wait 30min before waving again"
     );
 
     /*
