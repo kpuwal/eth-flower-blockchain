@@ -11,6 +11,7 @@ export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
   const contractABI = abi.abi;
+  const flowersPics = ['flower-2', 'flower-3', 'flower', 'tulip-2'];
 
   const plant = async () => {
     try {
@@ -23,8 +24,10 @@ export default function App() {
 
         let count = await plantPortalContract.getTotalFlowers();
         console.log("Retrieved total wave count...", count.toNumber());
+        let flower = flowersPics[Math.floor(Math.random() * flowersPics.length)]
+        console.log("flower icon ", flower)
 
-        const plantTxn = await plantPortalContract.flower('this is a message', { gasLimit: 300000});
+        const plantTxn = await plantPortalContract.flower(flower, { gasLimit: 300000});
         console.log("Mining...", plantTxn.hash);
 
         await plantTxn.wait();

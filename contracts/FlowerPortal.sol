@@ -6,10 +6,12 @@ import "hardhat/console.sol";
 
 contract FlowerPortal {
   uint256 totalFlowers;
+  uint256 flowersPics;
+  uint256 picture;
   // We will be using this below to help generate a random number
   uint256 private seed;
-
-  event NewFlower(address indexed from, uint256 timestamp, string message);
+  
+  event NewFlower(address indexed from, uint256 timestamp, string message, string picture);
 
   /*
      * I created a struct here named Wave.
@@ -43,8 +45,8 @@ contract FlowerPortal {
     * We need to make sure the current timestamp is at least 15-minutes bigger than the last timestamp we stored
     */
     require(
-        lastPlantedAt[msg.sender] + 30 minutes < block.timestamp,
-        "Wait 30min before waving again"
+        lastPlantedAt[msg.sender] + 15 minutes < block.timestamp,
+        "Wait 15min before waving again"
     );
 
     /*

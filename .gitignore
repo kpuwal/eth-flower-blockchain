@@ -11,3 +11,5 @@ artifacts
 # additional files
 section1_files
 .DS_Store
+noteForReact.js
+noteForReactCss.css

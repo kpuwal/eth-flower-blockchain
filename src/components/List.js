@@ -1,30 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { ethers } from "ethers";
 import abi from '../utils/FlowerPortal.json';
-import Flower1 from '../assets/flowers/flower.png';
-import Flower2 from '../assets/flowers/flower-2.png';
-import Flower3 from '../assets/flowers/flower-3.png';
-import Flower4 from '../assets/flowers/tulip-2.png';
+import '../App.css';
 
 const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
 const contractABI = abi.abi;
-const randomFlowers = [
-  Flower1,
-  Flower2,
-  Flower3,
-  Flower4
-]
-
-const Flower = () => {
-  return (
-    <div>
-    <img
-      src={randomFlowers[Math.floor(Math.random() * randomFlowers.length)]} alt='flower'
-      style={{width: '50px', height: '50px'}}
-    />
-    </div>
-  )
-}
 
 const List = () => {
   const [allFlowers, setAllFlowers] = useState([]);
@@ -99,17 +79,20 @@ const List = () => {
   }, []);
 
   return (
-    <>
+    <div className="list">
       {allFlowers.map((flower, index) => {
         return (
-          <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
-            <div>Address: {flower.address}</div>
-            <div>Time: {flower.timestamp.toString()}</div>
-            <div>Message: {flower.message}</div>
+          <div style={{ width: "250px", height: "120px", marginLeft: "16px", marginTop: "16px", padding: "8px", boxShadow: "0 2px 4px 0 rgba(0, 0, 0, 0.1), 0 3px 10px 0 rgba(0, 0, 0, 0.09)", borderRadius: "8px", display: "block", float: "left"}}>
+            <div key={index} style={{ padding: "8px", background: "rgba(0, 0, 0, 0.09)", borderRadius: "5px", align: "center"}}>
+              {/* <div>Address: {flower.address}</div>
+              <div>Time: {flower.timestamp.toString()}</div>
+              <div>Message: {flower.message}</div> */}
+              <img alt="flower" src={`flowers/${flower.message}.png`} style={{width: '80px', height: '80px'}} />
+            </div>
+            <div style={{paddingTop: "10px", fontSize: "9px"}}>{flower.address}</div>
           </div>)
       })}
-      <Flower />
-    </>
+    </div>
   )
 }
 
